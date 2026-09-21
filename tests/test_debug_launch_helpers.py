@@ -23,9 +23,7 @@ def _load_launch_module() -> ModuleType:
     return module
 
 
-def test_robot_urdf_temp_file_uses_flattened_namespace(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+def test_robot_urdf_temp_file_uses_flattened_namespace(monkeypatch: pytest.MonkeyPatch) -> None:
     module = _load_launch_module()
 
     class FixedDateTime:

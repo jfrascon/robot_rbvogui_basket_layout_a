@@ -49,8 +49,7 @@ def test_basket_layout_a_simulation_xacro_expands_to_valid_urdf(tmp_path: Path) 
     sim_path = PACKAGE_DIR / 'config' / 'default_simulation.yaml'
 
     result = run_bash(
-        f'xacro "{xacro_path}" sim_file:="{sim_path}" > "{urdf_path}" '
-        f'&& check_urdf "{urdf_path}"'
+        f'xacro "{xacro_path}" sim_file:="{sim_path}" > "{urdf_path}" && check_urdf "{urdf_path}"'
     )
     output = result.stdout + result.stderr
 

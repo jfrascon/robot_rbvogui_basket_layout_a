@@ -259,11 +259,7 @@ def _include_render_robot_urdf() -> IncludeLaunchDescription:
     return IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
-                [
-                    FindPackageShare('robot_rbvogui_common'),
-                    'launch',
-                    'render_robot_urdf.launch.py',
-                ]
+                [FindPackageShare('robot_rbvogui_common'), 'launch', 'render_robot_urdf.launch.py']
             )
         ),
         launch_arguments={
