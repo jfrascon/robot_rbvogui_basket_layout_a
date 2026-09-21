@@ -1,0 +1,258 @@
+<?xml version="1.0"?>
+<!--
+  This file publishes the basket layout A model of the `robot_rbvogui_basket_layout_a` package.
+  The robot name inside the URDF stays `rbvogui_basket_layout_a`.
+
+  This model extends the common RB-VOGUI platform with a basket sensor layout.
+  The layout contains:
+  - A Livox Mid-360 lidar mounted on the back of the basket.
+  - A Livox Mid-360 lidar mounted on the front of the basket.
+  - Two u-blox ANN-MB-00-00 GNSS antennas mounted on the basket.
+-->
+<robot name="rbvogui_basket_layout_a" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ===================================================================== -->
+  <!-- INCLUDES -->
+  <!-- ===================================================================== -->
+
+  <xacro:include filename="$(find robot_rbvogui_common)/urdf/common.xacro"/>
+
+  <!-- This module extends the common RB-VOGUI platform with the basket sensor layout. -->
+  <xacro:include filename="$(find robotics_description)/urdf/sensors/all_sensors_macro.xacro"/>
+  <xacro:include filename="$(find robot_rbvogui_common)/urdf/basket/basket_macros.xacro"/>
+
+  <!-- ===================================================================== -->
+  <!-- ARGS -->
+  <!-- ===================================================================== -->
+  <!-- Arguments for the front top Livox Mid-360 mounted on the basket. -->
+  <xacro:arg name="front_top_lidar_use_visual"         default="True"/>
+  <xacro:arg name="front_top_lidar_use_collision"      default="True"/>
+  <xacro:arg name="front_top_lidar_use_inertial"       default="True"/>
+  <xacro:arg name="front_top_lidar_use_v_mesh"         default="True"/>
+  <xacro:arg name="front_top_lidar_v_mesh_use_low_res" default="True"/>
+  <xacro:arg name="front_top_lidar_color"              default=""/>
+  <!-- Use shape instead of mesh for collision by default. -->
+  <xacro:arg name="front_top_lidar_use_c_mesh"         default="False"/>
+  <xacro:arg name="front_top_lidar_c_mesh_use_low_res" default="True"/>
+
+  <!-- Arguments for the back top Livox Mid-360 mounted on the basket. -->
+  <xacro:arg name="back_top_lidar_use_visual"         default="True"/>
+  <xacro:arg name="back_top_lidar_use_collision"      default="True"/>
+  <xacro:arg name="back_top_lidar_use_inertial"       default="True"/>
+  <xacro:arg name="back_top_lidar_use_v_mesh"         default="True"/>
+  <xacro:arg name="back_top_lidar_v_mesh_use_low_res" default="True"/>
+  <xacro:arg name="back_top_lidar_color"              default=""/>
+  <!-- Use shape instead of mesh for collision by default. -->
+  <xacro:arg name="back_top_lidar_use_c_mesh"         default="False"/>
+  <xacro:arg name="back_top_lidar_c_mesh_use_low_res" default="True"/>
+
+  <!-- ===================================================================== -->
+  <!-- XACRO:ARGS ARE CONVERTED TO XACRO:PROPERTIES FOR EASY MANIPULATION -->
+  <!-- ===================================================================== -->
+
+  <!-- ===================================================================== -->
+  <!-- BASKET -->
+  <!-- ===================================================================== -->
+
+  <!--
+  The basket mesh frame is at the center of its lower face. This offset preserves the previous
+  basket position relative to chassis_link.
+  -->
+  <xacro:property name="basket_joint_origin" value="0.027732 0 0.2445 0 0 0"/>
+
+  <xacro:basket_sensors
+      prefix="${robot_prefix}"
+      parent="${robot_prefix}chassis_link"
+      joint_parent_fr_basket_fr="${basket_joint_origin}"/>
+
+  <!-- ===================================================================== -->
+  <!-- U-BLOX ANN-MB-00-00 GNSS ANTENNAS -->
+  <!-- ===================================================================== -->
+
+  <xacro:property name="ublox_ann_mb_00_00_left_sim_cfg"
+                  value="${sim_cfg.get('ublox_ann_mb_00_00_left', dict())}"/>
+  <xacro:set_props_plugin_navsat prop_prefix="ublox_ann_mb_00_00_left_sim"
+                                  navsat_sim_cfg="${ublox_ann_mb_00_00_left_sim_cfg}"/>
+
+  <xacro:property name="ublox_ann_mb_00_00_right_sim_cfg"
+                  value="${sim_cfg.get('ublox_ann_mb_00_00_right', dict())}"/>
+  <xacro:set_props_plugin_navsat prop_prefix="ublox_ann_mb_00_00_right_sim"
+                                  navsat_sim_cfg="${ublox_ann_mb_00_00_right_sim_cfg}"/>
+
+  <!-- Both antenna poses are expressed relative to the basket root link. -->
+  <xacro:property name="ublox_ann_mb_00_00_left_joint_parent_fr_root_fr"
+                  value="0.371719 0.257925 0.664886 0.0 0.0 ${pi / 2.0}"/>
+  <xacro:property name="ublox_ann_mb_00_00_right_joint_parent_fr_root_fr"
+                  value="0.371719 -0.257925 0.664886 0.0 0.0 ${-pi / 2.0}"/>
+
+  <xacro:ublox_antenna_ann_mb_00_00
+      name="ublox_ann_mb_00_00_left"
+      prefix="${robot_prefix}"
+      parent_frame="${robot_prefix}basket_root_link"
+      joint_parent_fr_root_fr="${ublox_ann_mb_00_00_left_joint_parent_fr_root_fr}"
+      sim_enabled="${ublox_ann_mb_00_00_left_sim_enabled}"
+      sim_use_gravity="${ublox_ann_mb_00_00_left_sim_use_gravity}"
+      sim_always_on="${ublox_ann_mb_00_00_left_sim_always_on}"
+      sim_update_rate="${ublox_ann_mb_00_00_left_sim_update_rate}"
+      sim_position_horizontal_noise="${ublox_ann_mb_00_00_left_sim_position_horizontal_noise}"
+      sim_position_vertical_noise="${ublox_ann_mb_00_00_left_sim_position_vertical_noise}"
+      sim_velocity_horizontal_noise="${ublox_ann_mb_00_00_left_sim_velocity_horizontal_noise}"
+      sim_velocity_vertical_noise="${ublox_ann_mb_00_00_left_sim_velocity_vertical_noise}"
+      namespace="${robot_namespace}"
+      sim_topic="${ublox_ann_mb_00_00_left_sim_topic}"/>
+
+  <xacro:ublox_antenna_ann_mb_00_00
+      name="ublox_ann_mb_00_00_right"
+      prefix="${robot_prefix}"
+      parent_frame="${robot_prefix}basket_root_link"
+      joint_parent_fr_root_fr="${ublox_ann_mb_00_00_right_joint_parent_fr_root_fr}"
+      sim_enabled="${ublox_ann_mb_00_00_right_sim_enabled}"
+      sim_use_gravity="${ublox_ann_mb_00_00_right_sim_use_gravity}"
+      sim_always_on="${ublox_ann_mb_00_00_right_sim_always_on}"
+      sim_update_rate="${ublox_ann_mb_00_00_right_sim_update_rate}"
+      sim_position_horizontal_noise="${ublox_ann_mb_00_00_right_sim_position_horizontal_noise}"
+      sim_position_vertical_noise="${ublox_ann_mb_00_00_right_sim_position_vertical_noise}"
+      sim_velocity_horizontal_noise="${ublox_ann_mb_00_00_right_sim_velocity_horizontal_noise}"
+      sim_velocity_vertical_noise="${ublox_ann_mb_00_00_right_sim_velocity_vertical_noise}"
+      namespace="${robot_namespace}"
+      sim_topic="${ublox_ann_mb_00_00_right_sim_topic}"/>
+
+  <!-- ===================================================================== -->
+  <!-- FRONT TOP LIVOX MID-360 -->
+  <!-- ===================================================================== -->
+
+  <xacro:property name="front_top_lidar_use_visual"         value="$(arg front_top_lidar_use_visual)"/>
+  <xacro:property name="front_top_lidar_use_collision"      value="$(arg front_top_lidar_use_collision)"/>
+  <xacro:property name="front_top_lidar_use_inertial"       value="$(arg front_top_lidar_use_inertial)"/>
+  <xacro:property name="front_top_lidar_use_v_mesh"         value="$(arg front_top_lidar_use_v_mesh)"/>
+  <xacro:property name="front_top_lidar_v_mesh_use_low_res" value="$(arg front_top_lidar_v_mesh_use_low_res)"/>
+  <xacro:property name="front_top_lidar_color"              value="$(arg front_top_lidar_color)"/>
+  <xacro:property name="front_top_lidar_use_c_mesh"         value="$(arg front_top_lidar_use_c_mesh)"/>
+  <xacro:property name="front_top_lidar_c_mesh_use_low_res" value="$(arg front_top_lidar_c_mesh_use_low_res)"/>
+  <xacro:property name="front_top_lidar_sim_cfg"            value="${sim_cfg.get('front_top_lidar', dict())}"/>
+
+  <!--
+  front_top_lidar_sim_cfg contains the simulation configuration for the Livox Mid-360 lidar plugin.
+  -->
+  <xacro:set_props_plugin_lidar_3d_ring prop_prefix="front_top_lidar_sim"
+                                        sim_cfg="${front_top_lidar_sim_cfg}"/>
+
+  <!-- The top Livox Mid-360 poses are expressed relative to the basket link. -->
+  <xacro:property name="front_top_lidar_joint_parent_fr_root_fr"
+                  value="0.4882 0.0 0.1952 0.0 ${pi / 6.0} 0.0"/>
+
+  <xacro:livox_mid360
+      name="front_top_lidar"
+      prefix="${robot_prefix}"
+      parent_frame="${robot_prefix}basket_root_link"
+      use_visual="${front_top_lidar_use_visual}"
+      use_collision="${front_top_lidar_use_collision}"
+      use_inertial="${front_top_lidar_use_inertial}"
+      use_v_mesh="${front_top_lidar_use_v_mesh}"
+      v_mesh_use_low_res="${front_top_lidar_v_mesh_use_low_res}"
+      color="${front_top_lidar_color}"
+      use_c_mesh="${front_top_lidar_use_c_mesh}"
+      c_mesh_use_low_res="${front_top_lidar_c_mesh_use_low_res}"
+      joint_parent_fr_root_fr="${front_top_lidar_joint_parent_fr_root_fr}"
+      sim_enabled="${front_top_lidar_sim_enabled}"
+      sim_always_on="${front_top_lidar_sim_always_on}"
+      sim_visualize="${front_top_lidar_sim_visualize}"
+      sim_update_rate="${front_top_lidar_sim_update_rate}"
+      sim_hor_fov_deg="${front_top_lidar_sim_hor_fov_deg}"
+      sim_hor_res_deg="${front_top_lidar_sim_hor_res_deg}"
+      sim_ver_fov_deg="${front_top_lidar_sim_ver_fov_deg}"
+      sim_ver_res_deg="${front_top_lidar_sim_ver_res_deg}"
+      sim_dist_span="${front_top_lidar_sim_dist_span}"
+      sim_dist_res="${front_top_lidar_sim_dist_res}"
+      sim_gaussian_noise="${front_top_lidar_sim_gaussian_noise}"
+      namespace="${robot_namespace}"
+      sim_base_topic="${front_top_lidar_sim_base_topic}"/>
+
+  <!-- ===================================================================== -->
+  <!-- BACK TOP LIVOX MID-360 -->
+  <!-- ===================================================================== -->
+
+  <xacro:property name="back_top_lidar_use_visual"         value="$(arg back_top_lidar_use_visual)"/>
+  <xacro:property name="back_top_lidar_use_collision"      value="$(arg back_top_lidar_use_collision)"/>
+  <xacro:property name="back_top_lidar_use_inertial"       value="$(arg back_top_lidar_use_inertial)"/>
+  <xacro:property name="back_top_lidar_use_v_mesh"         value="$(arg back_top_lidar_use_v_mesh)"/>
+  <xacro:property name="back_top_lidar_v_mesh_use_low_res" value="$(arg back_top_lidar_v_mesh_use_low_res)"/>
+  <xacro:property name="back_top_lidar_color"              value="$(arg back_top_lidar_color)"/>
+  <xacro:property name="back_top_lidar_use_c_mesh"         value="$(arg back_top_lidar_use_c_mesh)"/>
+  <xacro:property name="back_top_lidar_c_mesh_use_low_res" value="$(arg back_top_lidar_c_mesh_use_low_res)"/>
+  <xacro:property name="back_top_lidar_sim_cfg"            value="${sim_cfg.get('back_top_lidar', dict())}"/>
+
+  <!--
+  back_top_lidar_sim_cfg contains the simulation configuration for the Livox Mid-360 lidar plugin.
+  -->
+  <xacro:set_props_plugin_lidar_3d_ring prop_prefix="back_top_lidar_sim"
+                                        sim_cfg="${back_top_lidar_sim_cfg}"/>
+
+  <xacro:property name="back_top_lidar_joint_parent_fr_root_fr"
+                  value="-0.4844 0.0 0.1217 0.0 ${pi / 6.0} ${pi}"/>
+
+  <xacro:livox_mid360
+      name="back_top_lidar"
+      prefix="${robot_prefix}"
+      parent_frame="${robot_prefix}basket_root_link"
+      use_visual="${back_top_lidar_use_visual}"
+      use_collision="${back_top_lidar_use_collision}"
+      use_inertial="${back_top_lidar_use_inertial}"
+      use_v_mesh="${back_top_lidar_use_v_mesh}"
+      v_mesh_use_low_res="${back_top_lidar_v_mesh_use_low_res}"
+      color="${back_top_lidar_color}"
+      use_c_mesh="${back_top_lidar_use_c_mesh}"
+      c_mesh_use_low_res="${back_top_lidar_c_mesh_use_low_res}"
+      joint_parent_fr_root_fr="${back_top_lidar_joint_parent_fr_root_fr}"
+      sim_enabled="${back_top_lidar_sim_enabled}"
+      sim_always_on="${back_top_lidar_sim_always_on}"
+      sim_visualize="${back_top_lidar_sim_visualize}"
+      sim_update_rate="${back_top_lidar_sim_update_rate}"
+      sim_hor_fov_deg="${back_top_lidar_sim_hor_fov_deg}"
+      sim_hor_res_deg="${back_top_lidar_sim_hor_res_deg}"
+      sim_ver_fov_deg="${back_top_lidar_sim_ver_fov_deg}"
+      sim_ver_res_deg="${back_top_lidar_sim_ver_res_deg}"
+      sim_dist_span="${back_top_lidar_sim_dist_span}"
+      sim_dist_res="${back_top_lidar_sim_dist_res}"
+      sim_gaussian_noise="${back_top_lidar_sim_gaussian_noise}"
+      namespace="${robot_namespace}"
+      sim_base_topic="${back_top_lidar_sim_base_topic}"/>
+
+  <!--
+  This model adds the Gazebo joint state publisher for the full assembled robot.
+  -->
+  <xacro:if value="${sim_file != ''}">
+    <gazebo>
+      <xacro:property name="joint_state_publisher_sim_cfg"
+                      value="${sim_cfg.get('joint_state_publisher', dict())}"/>
+
+      <xacro:if value="${joint_state_publisher_sim_cfg.get('enabled', False)}">
+        <xacro:property name="js_topic" value="${joint_state_publisher_sim_cfg.get('topic', '')}"/>
+
+        <xacro:if value="${js_topic == ''}">
+          ${xacro.fatal(
+            "joint_state_publisher.topic is required when joint_state_publisher.enabled is true.")}
+        </xacro:if>
+
+        <xacro:if value="${js_topic != ''}">
+          <xacro:resolve_topic prop_id="resolved_js_topic"
+                               topic="${js_topic}"
+                               namespace="${robot_namespace}"/>
+
+          <xacro:plugin_joint_state_publisher topic="${resolved_js_topic}">
+            <joint_names>
+              <joint_name>${robot_prefix}${front_left_wheel_name}_steering_joint</joint_name>
+              <joint_name>${robot_prefix}${front_left_wheel_name}_rotation_joint</joint_name>
+              <joint_name>${robot_prefix}${front_right_wheel_name}_steering_joint</joint_name>
+              <joint_name>${robot_prefix}${front_right_wheel_name}_rotation_joint</joint_name>
+              <joint_name>${robot_prefix}${rear_left_wheel_name}_steering_joint</joint_name>
+              <joint_name>${robot_prefix}${rear_left_wheel_name}_rotation_joint</joint_name>
+              <joint_name>${robot_prefix}${rear_right_wheel_name}_steering_joint</joint_name>
+              <joint_name>${robot_prefix}${rear_right_wheel_name}_rotation_joint</joint_name>
+            </joint_names>
+          </xacro:plugin_joint_state_publisher>
+        </xacro:if>
+      </xacro:if>
+    </gazebo>
+  </xacro:if>
+</robot>
