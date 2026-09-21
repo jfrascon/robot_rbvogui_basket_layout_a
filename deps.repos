@@ -10,6 +10,6 @@ repositories:
         #exclude: [] # list of repos files inside repository_path to exclude (optional)
     ros_gz_tools:
         type: git
-        url: git@gitlab.local.eurecat.org:robotics-automation/eut_ros_gz_tools.git
-        version: cd45342716e06662e357f0e4dd3f6da3f738ee09
+        url: https://github.com/jfrascon/ros_gz_tools.git
+        version: 1e26b58a32b368e5a467a37d5f4d0ec443de7b7d
         #exclude: [] # list of repos files inside repository_path to exclude (optional)

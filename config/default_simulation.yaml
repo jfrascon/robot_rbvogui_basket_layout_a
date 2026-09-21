@@ -159,7 +159,7 @@ ublox_ann_mb_00_00_right:
   enabled: false
 
 ################################################################################
-# Front top LiDAR is a Robosense Airy with integrated IMU.
+# Front top LiDAR is a Livox Mid-360 with an integrated IMU.
 ################################################################################
 # Configuration for the `gpu_lidar` Gazebo plugin.
 front_top_lidar:
@@ -230,7 +230,7 @@ front_top_lidar_imu:
   topic: front_top_lidar/imu/data # published
 
 ################################################################################
-# Back top LiDAR is a Robosense Airy with integrated IMU.
+# Back top LiDAR is a Livox Mid-360 with an integrated IMU.
 ################################################################################
 # Configuration for the `gpu_lidar` Gazebo plugin.
 back_top_lidar:
