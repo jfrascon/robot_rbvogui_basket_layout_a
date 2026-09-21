@@ -8,3 +8,8 @@ repositories:
         url: https://github.com/jfrascon/ros2_launch_helpers.git
         version: 62b2b516888238bdf1c80d32f5a73c6c1459002d
         #exclude: [] # list of repos files inside repository_path to exclude (optional)
+    ros_gz_tools:
+        type: git
+        url: git@gitlab.local.eurecat.org:robotics-automation/eut_ros_gz_tools.git
+        version: cd45342716e06662e357f0e4dd3f6da3f738ee09
+        #exclude: [] # list of repos files inside repository_path to exclude (optional)
